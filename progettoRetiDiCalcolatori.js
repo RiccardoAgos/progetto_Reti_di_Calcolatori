@@ -35,7 +35,7 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 	var contatoreAereiNonStampati = 0;
 
 
-	http.get('https://opensky-network.org/api/states/all?origin_country='+location, (res)=> {
+	http.get('https://opensky-network.org/api/states/all?'+location, (res)=> {
 		let rawDat = '';
 		res.on('data', (chunk) => { rawDat += chunk; });
 		res.on('end',() =>{
@@ -86,7 +86,6 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 				if(parsedData.states[contatoreTotale][2] == location){
 					contatoreAereiNonStampati++;
 				}
-
 				if(termina == false){
 					//condizione che ci permette di andare a caricare le informazioni 
 					//dentro la variabile messages (tramite il comando push)
@@ -103,12 +102,11 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 						contatoreCaratteri++;
 						contatoreAereiStampati++;
 						
-
 						//condizione che permette di inviare messaggi tramite i comandi 
 						//sendMessage e join, avviene ogni 35 aerei caricati tramite il 
 						//comando push sulla variabile messages
 						if(contatoreCaratteri == 35){
-
+							
 							//invio messaggio, tramite i comandi sendMessage e join
 							bot.sendMessage(chatId, messages.join("\n"));
 							messages = [];
@@ -121,18 +119,17 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 
 							//condizione per evitare che il codice vada in "429 too many request"
 							if(contatoreMessaggi == 50){
-								//sleep(1500);
-								contatoreMessggi = 0;
+								sleep(1500);
+								contatoreMessaggi = 0;
 								termina = true;
 							}
 						}
 					}						
-
-					//incremento contatore
-					contatoreTotale++;
 				}
+				//incremento contatore
+				contatoreTotale++;
+				
 			}
-
 
 			if(termina == false){
 				//condizione che permette di inviare l'ultimo messaggio 
@@ -160,17 +157,17 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 					"\nNon è stato possibile stampare tutti gli aerei.\nCAUSA LIMITAZIONI TELEGRAM\nNe sono stati stampati "
 					+contatoreAereiStampati+" su "+
 					contatoreAereiNonStampati+" complessivi");
-				}else{
+			}else{
 					
 				sleep(20000);
 				bot.sendMessage(chatId,
 					"Numero di aerei totali: "+contatoreAereiStampati+
 						"\nNazione d'origine:"+location);
-				}
-			}else if(esci == false){
-				bot.sendMessage(chatId,"\nNon sono state trovate corrispondenze, motivi:\n-Sintassi errata [/location Italy] lettera iniziale della nazione maiuscola\n-Non ci sono aerei originari da quella nazione in questo momento");
 			}
-		});
+		}else if(esci == false){
+				bot.sendMessage(chatId,"\nNon sono state trovate corrispondenze, motivi:\n-Sintassi errata [/location Italy] lettera iniziale della nazione maiuscola\n-Non ci sono aerei originari da quella nazione in questo momento");
+		}
+	});
 	}).on ('error', (e) => {
 		bot.sendMessage(chatId,"errore" + e.message);
 	});
