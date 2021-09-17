@@ -77,22 +77,20 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 			//usato per capire se vi sono troppi aerei da stampare	
 			var termina = false;
 
-
+			
 			//ciclo while che permette di scorrere tutto il vettore
 			while(parsedData.states[contatoreTotale] != null){
-
+			
 				//condiozne che ci permette di contare quanti aerei ci sono 
 				//(della stessa nazione d'origine) anche senza stamparli
 				if(parsedData.states[contatoreTotale][2] == location){
-							contatoreAereiNonStampati++;
+					contatoreAereiNonStampati++;
 				}
 
 				if(termina == false){
-
 					//condizione che ci permette di andare a caricare le informazioni 
 					//dentro la variabile messages (tramite il comando push)
 					if(parsedData.states[contatoreTotale][2] == location){
-							
 						esito = true;
 
 						//caricamento valori nella variabile messages, tramite comando push
@@ -104,13 +102,13 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 						//incremento contatori
 						contatoreCaratteri++;
 						contatoreAereiStampati++;
-
+						
 
 						//condizione che permette di inviare messaggi tramite i comandi 
 						//sendMessage e join, avviene ogni 35 aerei caricati tramite il 
 						//comando push sulla variabile messages
 						if(contatoreCaratteri == 35){
-									
+
 							//invio messaggio, tramite i comandi sendMessage e join
 							bot.sendMessage(chatId, messages.join("\n"));
 							messages = [];
@@ -123,7 +121,7 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 
 							//condizione per evitare che il codice vada in "429 too many request"
 							if(contatoreMessaggi == 50){
-								sleep(1500);
+								//sleep(1500);
 								contatoreMessggi = 0;
 								termina = true;
 							}
@@ -133,19 +131,20 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 					//incremento contatore
 					contatoreTotale++;
 				}
+			}
 
-				if(termina == false){
 
-					//condizione che permette di inviare l'ultimo messaggio 
-					//riguardante gli aerei (se vi è)
-					if(messages != []){
-						bot.sendMessage(chatId, messages.join("\n"));
-					}
+			if(termina == false){
+				//condizione che permette di inviare l'ultimo messaggio 
+				//riguardante gli aerei (se vi è)
+				if(messages != []){
+					bot.sendMessage(chatId, messages.join("\n"));
+					
 				}
 			}
 
 		}catch(e){
-			bot.sendMessage(chatId,"SERVIZI OFFERTI DAL SITO NON DISPONIBILI AL MOMENTO");
+			bot.sendMessage(chatId,"SERVIZI OFFERTI DAL SITO NON DISPONIBILI AL MOMENTO ");
 			esci = true;
 		}
 
@@ -155,7 +154,7 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 			//di aerei originari della nazione richiesta
 			if(termina == true){
 					
-				sleep(20000)
+				sleep(20000);
 				bot.sendMessage(chatId,
 					"\nNazione d'origine:"+location+
 					"\nNon è stato possibile stampare tutti gli aerei.\nCAUSA LIMITAZIONI TELEGRAM\nNe sono stati stampati "
@@ -163,7 +162,7 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 					contatoreAereiNonStampati+" complessivi");
 				}else{
 					
-				sleep(20000)
+				sleep(20000);
 				bot.sendMessage(chatId,
 					"Numero di aerei totali: "+contatoreAereiStampati+
 						"\nNazione d'origine:"+location);
@@ -177,6 +176,5 @@ bot.onText(/\/location (.*)/, (msg, match) => {
 	});
 
 });
-
 
 
